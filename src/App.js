@@ -11,6 +11,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <Button text="Click Here" />
+        <Button text="OK" />
         <p>Edit and save to reload.</p>
         <a
           className="App-link"
