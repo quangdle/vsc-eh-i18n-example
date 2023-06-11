@@ -10,13 +10,11 @@
     "edit": "Edit",
     "add": "Add",
     "close": "Close",
+    "button": "button",
     "moduleA.context1.a": "a",
     "moduleA.context1.b": "b",
     "moduleA.context1.c": "c",
     "moduleA.context1.yes": "Yes",
-    "moduleB.context2": "b",
-    "moduleB.context1": "c",
-    "moduleB.context3": "d",
     "common": {
       "title": {
         "learnReact": "Learn React",
@@ -25,6 +23,9 @@
           "no": "No"
         }
       }
-    }
+    },
+    "moduleB.context2": "b",
+    "moduleB.context1": "c",
+    "moduleB.context3": "d"
   }
 }
