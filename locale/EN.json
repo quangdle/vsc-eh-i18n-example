@@ -1,31 +1,32 @@
 {
   "lang": "en-AU",
   "messages": {
-    "oK": "OK",
+    "add": "Add",
+    "button": "button",
     "cancel": "Cancel",
-    "yes": "Yes",
-    "no": "No",
-    "save": "Save",
+    "close": "Close",
+    "common": {
+      "title": {
+        "answer": {
+          "no": "No",
+          "yes": "Yes"
+        },
+        "learnReact": "Learn React"
+      }
+    },
     "delete": "Delete",
     "edit": "Edit",
-    "add": "Add",
-    "close": "Close",
-    "button": "button",
+    "editAndReload": "Edit and save to reload.",
+    "no": "No",
+    "oK": "OK",
+    "save": "Save",
+    "yes": "Yes",
     "moduleA.context1.a": "a",
     "moduleA.context1.b": "b",
     "moduleA.context1.c": "c",
     "moduleA.context1.yes": "Yes",
-    "common": {
-      "title": {
-        "learnReact": "Learn React",
-        "answer": {
-          "yes": "Yes",
-          "no": "No"
-        }
-      }
-    },
-    "moduleB.context2": "b",
     "moduleB.context1": "c",
+    "moduleB.context2": "b",
     "moduleB.context3": "d"
   }
 }
