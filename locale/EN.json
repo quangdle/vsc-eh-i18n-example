@@ -1,6 +1,25 @@
 {
   "lang": "en-AU",
   "messages": {
-    "OK": "OK"
+    "OK": "OK",
+    "Cancel": "Cancel",
+    "Yes": "Yes",
+    "No": "No",
+    "Save": "Save",
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "Add": "Add",
+    "Close": "Close",
+    "moduleA.context1.a": "a",
+    "moduleA.context1.b": "b",
+    "moduleA.context1.c": "c",
+    "moduleB.context2": "b",
+    "moduleB.context1": "c",
+    "moduleB.context3": "d",
+    "common": {
+      "title": {
+        "learnReact": "Learn React"
+      }
+    }
   }
 }
