@@ -10,16 +10,18 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <Button text="Click Here" />
-        <Button text="Okie dokie" />
-        <p>Edit and save to reload.</p>
+        <Button text={Intl.formatMessage({ id: "common.title.answer.yes" })} />
+        <Button text={Intl.formatMessage({ id: "no" })} />
+        <Button text={Intl.formatMessage({ id: "allooo" })} />
+        <Button text={Intl.formatMessage({ id: "maybe" })} />
+        <p>{Intl.formatMessage({ id: "editAndReload" })}</p>
         <a
           className="App-link"
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          {Intl.formatMessage({ id: "moduleA.context1.yes" })}
         </a>
       </header>
     </div>
