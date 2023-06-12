@@ -1,9 +1,9 @@
 {
   "lang": "en-AU",
   "messages": {
-    "add": "Add",
-    "button": "button",
     "cancel": "Cancel",
+    "add": "Add",
+    "allooo": "Maybe",
     "close": "Close",
     "common": {
       "title": {
@@ -15,18 +15,20 @@
       }
     },
     "delete": "Delete",
-    "edit": "Edit",
-    "editAndReload": "Edit and save to reload.",
-    "no": "No",
-    "oK": "OK",
-    "save": "Save",
     "yes": "Yes",
-    "moduleA.context1.a": "a",
+    "edit": "Edit",
+    "button": "button",
+    "editAndReload": "Edit and save to reload.",
+    "maybe": "Maybe",
+    "oK": "OK",
+    "no": "No",
+    "save": "Save",
     "moduleA.context1.b": "b",
-    "moduleA.context1.c": "c",
-    "moduleA.context1.yes": "Yes",
-    "moduleB.context1": "c",
+    "moduleA.context1.a": "a",
     "moduleB.context2": "b",
-    "moduleB.context3": "d"
+    "moduleA.context1.c": "c",
+    "moduleB.context1": "c",
+    "moduleB.context3": "d",
+    "moduleA.context1.yes": "Yes"
   }
 }
