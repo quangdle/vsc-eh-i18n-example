@@ -15,6 +15,7 @@ function App() {
         <Button text={Intl.formatMessage({ id: "allooo" })} />
         <Button text={Intl.formatMessage({ id: "maybe" })} />
         <p>{Intl.formatMessage({ id: "editAndReload" })}</p>
+        <Button>{Intl.formatMessage({ id: "sort" })}</Button>
         <a
           className="App-link"
           href="https://reactjs.org"

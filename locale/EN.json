@@ -1,34 +1,35 @@
 {
   "lang": "en-AU",
   "messages": {
-    "cancel": "Cancel",
     "add": "Add",
     "allooo": "Maybe",
+    "button": "button",
+    "cancel": "Cancel",
     "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "editAndReload": "Edit and save to reload.",
+    "maybe": "Maybe",
+    "no": "No",
+    "oK": "OK",
+    "save": "Save",
+    "sort": "Sort",
+    "yes": "Yes",
+    "moduleA.context1.a": "a",
+    "moduleA.context1.b": "b",
+    "moduleA.context1.c": "c",
+    "moduleA.context1.yes": "Yes",
+    "moduleB.context1": "c",
+    "moduleB.context2": "b",
+    "moduleB.context3": "d",
     "common": {
       "title": {
+        "learnReact": "Learn React",
         "answer": {
           "no": "No",
           "yes": "Yes"
-        },
-        "learnReact": "Learn React"
+        }
       }
-    },
-    "delete": "Delete",
-    "yes": "Yes",
-    "edit": "Edit",
-    "button": "button",
-    "editAndReload": "Edit and save to reload.",
-    "maybe": "Maybe",
-    "oK": "OK",
-    "no": "No",
-    "save": "Save",
-    "moduleA.context1.b": "b",
-    "moduleA.context1.a": "a",
-    "moduleB.context2": "b",
-    "moduleA.context1.c": "c",
-    "moduleB.context1": "c",
-    "moduleB.context3": "d",
-    "moduleA.context1.yes": "Yes"
+    }
   }
 }
