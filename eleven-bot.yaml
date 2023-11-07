@@ -1,0 +1,298 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: eleven-bot
+  namespace: staging
+  annotations:
+    fluxcd.io/ignore: "true"
+spec:
+  releaseName: eleven-bot
+  suspend: false
+  timeout: 5m0s
+  install:
+    #disableWait: true
+    #disableHooks: true
+    remediation:
+      retries: 3 # Defaults to 0, a negative integer equals to unlimited retries
+      remediateLastFailure: true
+  upgrade:
+    #disableHooks: true
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+      strategy: "rollback"
+  rollback:
+    disableWait: true
+    disableHooks: true
+  chart:
+    spec:
+      chart: ./eh-app
+      sourceRef:
+        kind: GitRepository
+        name: eh-helm-chart
+        namespace: flux-system
+  interval: 2m0s # this is also the interval of helm chart
+  valuesFrom:
+    - kind: Secret
+      name: eleven-bot-vault
+      valuesKey: values.yaml
+      optional: true
+  values:
+    image:
+      repository: 979797940137.dkr.ecr.ap-southeast-2.amazonaws.com/employmenthero/eleven-bot
+      # imagemarker is a marker that is required for auto deployment
+      # Format: '# {"$imagemarker": "<NAMESPACE>:<APP_NAME>"}'
+      tag: master_bf92325bff69733757e2fcc4cc30cd2c977e2995 # {"$imagemarker": "staging:eleven-bot"}
+      pullPolicy: IfNotPresent
+    # Override name of the chart
+    nameOverride: ""
+    # Override fully qualified app name
+    fullnameOverride: "eleven-bot"
+    additionalAnnotations:
+      owner: "squad-peacemakers"
+    # datadog configuration
+    datadog:
+      environment: staging
+    procOptions:
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: stateful
+    # Add web/worker/consumer containers and corresponding services
+    procs:
+      - name: web
+        meshed: false
+        command: ["bundle", "exec", "rackup", "config.ru", "-p", "80"]
+        replicas: 1
+        ports:
+          - name: http
+            port: 80
+        liveness:
+          type: http
+          port: 80
+          path: /healthz
+          period: 10
+          threshold: 5
+          initialDelay: 30
+        readiness:
+          type: http
+          port: 80
+          path: /healthz
+          period: 10
+          threshold: 5
+          initialDelay: 30
+        probe:
+          enabled: true
+          port: 80
+          path: /healthz
+        resources:
+          requests:
+            memory: 110Mi
+          limits:
+            memory: 200Mi
+        terminating_timeout: 300
+    databaseMigration:
+      enabled: true
+      backoffLimit: 1
+      migrationPlan: "pre"
+      jobDeadline: 300
+      command: ["bundle", "exec", "rake", "db:migrate"]
+    cronjobs: []
+    env:
+      APP_ENV: staging
+      RAILS_ENV: staging
+      RAILS_LOG_TO_STDOUT: "true"
+      USER_MAPPING: >
+        {
+          "@BuuNguyenWork": "@U03JB1GNU49",
+          "@DonDinhNu": "@U240H8BNV",
+          "@HoaNguyenEH": "@UCJFQT4SG",
+          "@Hoangtran138": "@U6UH0N2AH",
+          "@KimTrijnh": "@UL0Q9LCGG",
+          "@MinhDinh123": "@UB05SMTB2",
+          "@Nguyenpham1008": "@UKLQG3F96",
+          "@SonTrinhEH": "@UBGG1GC80",
+          "@TanNguyenEH": "@UBA0SDK1U",
+          "@ThienAn1010": "@U044ZBU30BD",
+          "@KeyPay/keypay-dev-team": "!subteam^S039TBMFC21",
+          "@KeyPay/keypay-uk-dev-team": "!subteam^S03LA635YSE",
+          "@Thinkei/engineering-managers": "!subteam^S05FPFUQKK6",
+          "@Thinkei/squad-andromeda": "!subteam^S01EL311C1W",
+          "@Thinkei/squad-architects": "!subteam^S03C13KS6GY",
+          "@Thinkei/squad-asgardians": "!subteam^SPY1HGKN0",
+          "@Thinkei/squad-august": "!subteam^S02EB5MU2PL",
+          "@Thinkei/squad-autobot": "!subteam^SPM19LF8B",
+          "@Thinkei/squad-bahamut": "!subteam^SPYF48LS1",
+          "@Thinkei/squad-bounty-hunter": "!subteam^S04SB339XED",
+          "@Thinkei/squad-fe-platform": "!subteam^SRQNCEBK5",
+          "@Thinkei/squad-flying-pigs": "!subteam^SPM1AQLEP",
+          "@Thinkei/squad-gold-diggers": "!subteam^S01G7KE3F1P",
+          "@Thinkei/squad-groot": "!subteam^S01QNBB1MNZ",
+          "@Thinkei/squad-hrv": "!subteam^S03T6NEN8KZ",
+          "@Thinkei/squad-hustle": "!subteam^S03TM6SQDMZ",
+          "@Thinkei/squad-index": "!subteam^S03DYPZD9K8",
+          "@Thinkei/squad-jokers": "!subteam^SPQHMGGRF",
+          "@Thinkei/squad-konohagakure": "!subteam^SQ0AW4MST",
+          "@Thinkei/squad-mobile": "!subteam^SE0T4QTLN",
+          "@Thinkei/squad-night-s-watch": "!subteam^SQ0LZDLBY",
+          "@Thinkei/squad-onions": "!subteam^SQ0M636KY",
+          "@Thinkei/squad-paws": "!subteam^SPYF124AU",
+          "@Thinkei/squad-platform": "!subteam^SESGW2A5A",
+          "@Thinkei/squad-pokemon-ruby": "!subteam^SQ0AFMF63",
+          "@Thinkei/squad-pokemon-sapphire": "!subteam^SQ0AFMF63",
+          "@Thinkei/squad-ryuk": "!subteam^SQ0AS3SDV",
+          "@Thinkei/squad-shiba": "!subteam^S02H0BEPCAD",
+          "@Thinkei/squad-squid": "!subteam^S04S0TARSAG",
+          "@Thinkei/squad-sushi": "!subteam^S02C1B3SRTK",
+          "@Thy-Pham": "@U02N53391R9",
+          "@TienNguyen-EH": "@U05FFEKSMS8",
+          "@TienNguyenEH": "@UAG3F8J2U",
+          "@TrangNgyn": "@U034EKYLQ03",
+          "@VuNguyenXuan": "@UB1P43J9L",
+          "@andrewcai2": "@U0F7UTRSP",
+          "@anhdaueh": "@U023YL84S13",
+          "@anhtranEH": "@U2P9EMSHY",
+          "@anlnt": "@U04BQ90RLA3",
+          "@baohoanggia": "@U05GSL569FB",
+          "@binhlam-eh": "@U05EBD7G750",
+          "@Blitheness": "@U03JB1NQ857",
+          "@bmd08a1": "@UKPBHQH9Q",
+          "@briankhdo": "@U017SQJFJG6",
+          "@chipset508": "@U2NNKCHN0",
+          "@christhuong": "@UKNKX5D8X",
+          "@cuongn265": "@UH20SAL85",
+          "@dakennguyen": "@U01G51HKRL3",
+          "@dangnm": "@U2M76SG03",
+          "@dautroc": "@U6WA7K4E5",
+          "@doha99-eh": "@UQ56RNVR7",
+          "@dthtien": "@U0112FC4URM",
+          "@duchoang": "@U030XL29A4C",
+          "@duybn": "@U02RRBN6DGF",
+          "@dvkndn": "@UMAE1GB2R",
+          "@eh-khangduong": "@U024NM0QHJR",
+          "@eh-sonle": "@U03J4HAVAF4",
+          "@eh-thinhnguyen": "@U04L0TXTUJJ",
+          "@ehdieunguyen": "@UB05WEA9E",
+          "@ehhuythai": "@UB62WD2F9",
+          "@ehvinhbui": "@U0282LVGABY",
+          "@gaugau": "@U0ZSC9LN6",
+          "@Gaweph": "@U034Z6WEJQH",
+          "@giang-pham": "@U02DG7V1E9K",
+          "@hainguyen-eh": "@U02BQ7BKXMJ",
+          "@hainguyen-eh": "@U02BQ7BKXMJ",
+          "@hanh090":"@URX9GFZM0",
+          "@haudao-eh": "@U4BU2KAEN",
+          "@hieubui149": "@UK8SA6PDM",
+          "@hieuvu-eh": "@U02QC608M1T",
+          "@hoangnguyen2397": "@U02FGQTBS4W",
+          "@hoangtan223": "@U01DKAUF2TW",
+          "@hpsony94": "@U03NYTR4K5H",
+          "@hungmqn": "@U01HB5745EZ",
+          "@huuduc14665": "@U04AX4UL1T8",
+          "@huy120486": "@U56M2SL95",
+          "@huyna13": "@U059X4QKQ5B",
+          "@huytq000605": "@U02NTUZCURG",
+          "@huytruong1997": "@UQN2T9U77",
+          "@jasonas-jones": "@U03JBEMFCL9",
+          "@kenngithub": "@U034HMB83A9",
+          "@keymastervn": "@U01RKA3CW7P",
+          "@khacluan": "@U51MJ4PGT",
+          "@khanhnguyen234": "@U021VHC04UW",
+          "@khanhnguyennhat-eh": "@U056FQXPX2L",
+          "@khoaddtran": "@U03N0GFMKEK",
+          "@khoahaha": "@U9G7P3J9F",
+          "@khoainguyeneh": "@UANF7S40Z",
+          "@khoido":"@U1HCLQ48J",
+          "@khuongnguyen-eh": "@URJ9A9G5D",
+          "@knganle": "@U02E7NEFGBF",
+          "@lamnguyencse17": "@U041VKHJXJT",
+          "@lhhuyEH": "@U049LSJJR24",
+          "@loctruongEH": "@U05JK5GJKPV",
+          "@longnh92": "@U6NMETPM0",
+          "@longtraneh": "@UB0PBFC3V",
+          "@luanlai2201": "@U053X1X834N",
+          "@luanlai2201": "@U053X1X834N",
+          "@minhhien1996": "@U010P0J7R5Z",
+          "@minhhuyxx": "@U035AB4TXCY",
+          "@minhleEH": "@U023H2HQY2W",
+          "@mmeeoorroo": "@U2NPH0TBR",
+          "@monkeydl": "@U2NNRRCA2",
+          "@namhoei": "@UR3KUN8G2",
+          "@namvoeh": "@UBCVAL8AG",
+          "@namvu-eh": "@U05ELSMS5AQ",
+          "@ngocdo4299": "@U049U2N9R6H",
+          "@ngoctrinhbker": "@UMUNVJG78",
+          "@nguyenductoan": "@UBH7GU4BC",
+          "@nguyennk": "@U9WNDQVGE",
+          "@nguyenntph": "@U4BS268RH",
+          "@nguyenphuceh": "@UJ2USM2AY",
+          "@nguyenquangminh0711": "@U2748BV70",
+          "@nguyentran4896": "@U01LFJ2LXS6",
+          "@nguyyentantai": "@U048QJ3HDF0",
+          "@nhatvueh": "@U01HLGXA2R2",
+          "@nhi479": "@U02JP12HJEA",
+          "@nv-anhvy": "@UGAFQF7PH",
+          "@nvh0412": "@UCJFQT4SG",
+          "@peterkhuu": "@U0UCHDJP6",
+          "@phamtuan2993": "@U8R514K1S",
+          "@phanbaominh": "@U02FS7MHMKJ",
+          "@phatleeh": "@U0FCU4MLY",
+          "@phthhieu": "@U2WQXMH5F",
+          "@phucan97vn":  "@U05K7BMK9DM",
+          "@phucdph": "@U054V03KZNY",
+          "@phucdph": "@U054V03KZNY",
+          "@phuongdtd": "@U53VCETPE",
+          "@phuongthuan": "@U0298U0FXFD",
+          "@qhuyduong": "@UB05S661E",
+          "@quan281999": "@U02TZ0K1DUY",
+          "@quangdle": "@U02G7AWCVE3",
+          "@quannguyen-eh": "@U01G1LPKBK7",
+          "@quynhethereal": "@U0286DHDAN9",
+          "@salahuddin-github": "@U03DC01NRKN",
+          "@sanghn": "@U02024BHFD4",
+          "@sangquangnguyen": "@U0299MT0KR9",
+          "@sanju4ever" : "@U03DN8V0HJN",
+          "@steven-whitehead-webscale": "@U038JL6D2FP",
+          "@suonlight": "@U5DEG92LV",
+          "@taivueh": "@U047R7G3CBG",
+          "@thaohdm": "@U02JRUGMN9E",
+          "@thetungvan": "@UGAFRE02K",
+          "@thukim": "@U0FCF02QP",
+          "@tientaidev": "@U0400HRCMMW",
+          "@tlvu2697": "@UH2NCN41M",
+          "@toan2406": "@U9HR7HU1M",
+          "@tran-eh": "@U01P6M46D7X",
+          "@tri-dang": "@U274RG56E",
+          "@trungtruongeh": "@U03967QMBV3",
+          "@truongphameh": "@UL7U9SAHF",
+          "@ttkien": "@ULZ0ZR3AN",
+          "@tung-eh": "@U02C3QR0W67",
+          "@tvkhoa": "@U2WM6HQ5T",
+          "@vietba": "@UCZH77869",
+          "@vinh-tony": "@U01HQKSDAUB",
+          "@vinhphan-eh": "@U03T1F35951",
+          "@vnqthai": "@U632ZN2RK",
+          "@vunguyenhero": "@U02EVS4TA78",
+          "@vuonglam-eh": "@UMF48DHB4",
+          "@vuquangtruong": "@U2NNGAJKW",
+          "@vutienduongeh": "@U782HPFDY",
+          "@zealotnt": "@UBJ40747Q",
+          "@btarcahn": "@U02BJ2EFKNW",
+          "@dangtran47": "@U02C5US76V7",
+          "@dangtranEH": "@U04L7G39REW",
+          "@daviddesar": "@U04072ENC22",
+          "@tamcv": "@U03RPN3V0QG",
+          "@thanhnd0101": "@U02CAFTB75K",
+          "@beobeboi": "@U05QGGPTSQP",
+          "@cuongn265": "@UH20SAL85",
+          "@huyNtqEH": "@U05QZG5UBFW",
+          "@antdp97 ": "@U05K7BMK9DM",
+          "@minhtuan-eh": "@U03T1F3TYUT",
+          "@hudrucan": "@U02GD6DEK1N",
+          "@dangminhngoc": "@U02DG7V3013",
+          "@phienpham90": "@U01P9QK50PL",
+          "@baodinh93": "@U05F6BPM4T0",
+          "@anchueh":"@U060SDHSW5P",
+          "@tam159":"@U05GD9RPAR1"
+        }
